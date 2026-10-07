@@ -4,6 +4,8 @@ A single-file, self-contained **systems-intelligence dashboard** for India's urb
 
 **Live:** https://ashwask.github.io/india-waste-canvas/
 
+This repo is the **canonical home** for the Solid Waste Canvas dashboard. Edit it here. The source material (concept note, decks, map-layer PNGs, generator scripts) lives in the private Rainmatter Urban repo, which now just links back to this dashboard.
+
 ## What it shows
 - National / state / city views (geography is the primary filter)
 - Pan-India infrastructure map, waste-flow Sankey, stock-and-flow circularity model
