@@ -210,6 +210,9 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 .subtab-btn{background:var(--bg3);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
 .subtab-btn:hover{border-color:var(--teal);color:var(--teal)}
 .subtab-btn.active{background:var(--teal);border-color:var(--teal);color:#000}
+.subtab-select{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 32px 7px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;outline:none;min-width:160px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2300BFA5' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.subtab-select:focus{border-color:var(--teal)}
+.subtab-select option{background:var(--bg2);color:var(--text)}
 </style>
 </head>
 <body>
@@ -246,7 +249,7 @@ details[open] .src-summary::after{transform:rotate(180deg)}
       <h1 class="main-title">India Urban Solid Waste System — <span>Solid Waste Canvas</span></h1>
       <p class="subtitle">National Ecosystem Intelligence · Systems Mapping · Unit Economics · Pan-India Actor Landscape</p>
       <p style="font-size:13px;color:var(--muted);margin-top:14px;max-width:640px;line-height:1.65">India generates <strong style="color:var(--text)">1,66,096 TPD</strong> of urban municipal solid waste (MoHUA, 2025). The official ~80% "processed" figure is installed capacity, not treatment: measured treatment is closer to half, and real material recovery lower still.</p>
-      <p style="font-size:11px;color:var(--muted);margin-top:10px">Open data · CC BY-SA 4.0 · Leaflet.js · D3.js · Chart.js · Esri</p>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px">Open data · CC BY-SA 4.0 · Leaflet.js · D3.js · Chart.js · Esri · auto-refresh 24h</p>
     </div>
     <div style="text-align:right">
       <div class="clock" id="clock">--:--:-- --</div>
@@ -293,10 +296,12 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 <section id="system-flows" class="section fade-in">
   <div class="section-title">System Flows & Circularity</div>
   <div class="subtab-bar">
-    <button class="subtab-btn active" onclick="switchSubtab('system-flows','sankey')">Sankey</button>
-    <button class="subtab-btn" onclick="switchSubtab('system-flows','flow')">Flow</button>
-    <button class="subtab-btn" onclick="switchSubtab('system-flows','circularity')">Circularity</button>
-    <button class="subtab-btn" onclick="switchSubtab('system-flows','baseline-ref')">Baseline</button>
+    <select class="subtab-select" aria-label="System flows view" onchange="switchSubtab('system-flows',this.value)">
+      <option value="sankey">Sankey</option>
+      <option value="flow">Flow</option>
+      <option value="circularity">Circularity</option>
+      <option value="baseline-ref">Baseline</option>
+    </select>
   </div>
   <div class="subtab-panel active" data-stab="sankey">
     <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Width = volume (TPD). Select a city above to see city-level material flows.</p>
@@ -320,9 +325,11 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 <section id="economics-gaps" class="section fade-in">
   <div class="section-title">Economics, Gaps & Analysis</div>
   <div class="subtab-bar">
-    <button class="subtab-btn active" onclick="switchSubtab('economics-gaps','uniteco')">Economics</button>
-    <button class="subtab-btn" onclick="switchSubtab('economics-gaps','bottlenecks')">Bottlenecks</button>
-    <button class="subtab-btn" onclick="switchSubtab('economics-gaps','compare')">Gaps</button>
+    <select class="subtab-select" aria-label="Economics and gaps view" onchange="switchSubtab('economics-gaps',this.value)">
+      <option value="uniteco">Economics</option>
+      <option value="bottlenecks">Bottlenecks</option>
+      <option value="compare">Gaps</option>
+    </select>
   </div>
   <div class="subtab-panel active" data-stab="uniteco">
     <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Cost and revenue per tonne across the waste value chain. Switch geography above for city-level estimates.</p>
@@ -352,10 +359,12 @@ details[open] .src-summary::after{transform:rotate(180deg)}
 <section id="ecosystem" class="section fade-in">
   <div class="section-title">Ecosystem & Stakeholders</div>
   <div class="subtab-bar">
-    <button class="subtab-btn active" onclick="switchSubtab('ecosystem','partners')">Partners</button>
-    <button class="subtab-btn" onclick="switchSubtab('ecosystem','funders')">Funders</button>
-    <button class="subtab-btn" onclick="switchSubtab('ecosystem','actions')">Actions</button>
-    <button class="subtab-btn" onclick="switchSubtab('ecosystem','focus')">Focus</button>
+    <select class="subtab-select" aria-label="Ecosystem view" onchange="switchSubtab('ecosystem',this.value)">
+      <option value="partners">Partners</option>
+      <option value="funders">Funders</option>
+      <option value="actions">Actions</option>
+      <option value="focus">Focus</option>
+    </select>
   </div>
   <div class="subtab-panel active" data-stab="partners">
     <div class="filter-row" id="partner-filters"></div>
@@ -514,9 +523,8 @@ function switchSubtab(parentId, subtabId) {
     p.style.display = isActive ? 'block' : 'none';
     p.classList.toggle('active', isActive);
   });
-  parent.querySelectorAll('.subtab-btn').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('onclick').includes("'"+subtabId+"'"));
-  });
+  const sel = parent.querySelector('.subtab-select');
+  if (sel && sel.value !== subtabId) sel.value = subtabId;
   // Lazy render D3 panels
   if (!switchSubtab._rendered) switchSubtab._rendered = {};
   const key = parentId + ':' + subtabId;
@@ -1291,7 +1299,7 @@ function renderPartners(filter="All"){
 }
 function initPartnerFilters(){
   const filters=["All","Formal","Informal","MRF","Aggregators","Recyclers","Processors"];
-  document.getElementById("partner-filters").innerHTML=filters.map(f=>`<button class="filter-btn ${f==="All"?"active":""}" data-f="${f}" onclick="renderPartners('${f}')">${f}</button>`).join("");
+  document.getElementById("partner-filters").innerHTML=`<select class="subtab-select" aria-label="Filter partners by block" onchange="renderPartners(this.value)">${filters.map(f=>`<option value="${f}">${f==="All"?"All blocks":f}</option>`).join("")}</select>`;
   renderPartners("All");
 }
 function renderFunders(){
@@ -1341,6 +1349,9 @@ document.addEventListener("DOMContentLoaded",()=>{
   initPartnerFilters();renderFunders();renderActions();renderFocus();
   renderHiddenDynamics();renderSources();
   initScrollObs();initNavHL();
+  // Auto-refresh the whole dashboard (all sections) every 24h: reloads the page so a
+  // long-open tab re-runs every render and picks up any redeployed data.
+  setTimeout(function(){try{location.reload();}catch(e){}},24*60*60*1000);
   window.addEventListener("resize",()=>{
     const ap=document.querySelector('#system-flows .subtab-panel.active');
     if(ap && ap.dataset.stab){
